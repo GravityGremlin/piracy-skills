@@ -20,7 +20,7 @@ live in a dedicated directory (e.g., `audits/tdarr-audit-YYYY-MM-DD.md`).
 ### Primary host
 
 - Runs `tdarr-server` + `tdarr-node` from a compose stack (e.g.,
-  `/opt/stacks/tdarr/` or `~/stacks/tdarr/`).
+  `~/stacks/tdarr/` or `/opt/stacks/tdarr/`).
 - Web UI on port 8266.
 - **Server DB/reports**: `<data-dir>/server/Tdarr/DB2/` (JobReports =
   per-job dirs of `.txt` logs).
@@ -41,8 +41,10 @@ live in a dedicated directory (e.g., `audits/tdarr-audit-YYYY-MM-DD.md`).
   - `bumped` / `holdUntil` for queue management
 - **Server text logs**: `<data-dir>/logs/Tdarr_{Server,Node}_Log.txt`
   (mounted `/app/logs` in the container).
-- **Library**: on a storage mount (e.g., `/storage/library/movies/...`).
-- **Transcode cache**: `/storage/tdarr_cache` + `/var/cache/tdarr`.
+- **Library**: on a storage mount (e.g., `/mnt/media/library/movies/...` or
+  `~/media/library/movies/...`).
+- **Transcode cache**: a dedicated cache directory (e.g.,
+  `/mnt/media/tdarr_cache` or `~/tdarr_cache`) + `/var/cache/tdarr`.
 
 ### Additional hosts
 

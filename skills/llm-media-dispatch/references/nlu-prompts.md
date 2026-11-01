@@ -10,7 +10,7 @@ media_type: "game" | "music" | "movie" | "tv" | "book" | "auto"
 title: string (the media title)
 consoles: array of strings, or ["all"] for every console
 regions: array of strings, or ["all"] for every region
-format: "No-Intro" | "Redump" | "TOSEC" | "auto"
+format: "No-Intro" | "Redump" | "TOSEC" | "MAME" | "FBNeo" | "FLAC" | "MP3" | "Remux" | "1080p" | "720p" | "EPUB" | "PDF" | "auto"
 priority: "fast" | "best" | "complete"
 
 No markdown, no commentary, no thinking. Just the JSON object.
@@ -158,9 +158,9 @@ No markdown, no commentary, no thinking. Just the JSON object.
 
 ```python
 NLU_CONFIG = {
-    "model": "pool/nemotron-3-super",
-    "endpoint": "http://IPVPLACEHOLDER:20128/v1",  # OmniRoute
-    "credential_env": "HERMES_CUSTOM_IPVPLACEHOLDER_CREDENTIAL",
+    "model": "nemotron-3-super",
+    "endpoint": os.environ.get("NLU_BASE_URL", "http://<gateway-host>:<port>/v1"),  # your OpenAI-compatible NLU gateway
+    "credential_env": "NLU_API_KEY",
     "response_format": {"type": "json_object"},
     "timeout": 30,
     "max_tokens": {
@@ -175,7 +175,7 @@ NLU_CONFIG = {
 
 1. **Always use `response_format: {"type": "json_object"}`** — required for structured output
 2. **System prompt must forbid thinking/commentary** — "No markdown, no commentary, no thinking. Just the JSON object."
-3. **Only `pool/nemotron-3-super` works reliably** — Lightning/Ultra dump thinking even in JSON mode
+3. **Only `nemotron-3-super` works reliably** — smaller/other models dump thinking even in JSON mode
 4. **Set timeout 30s** — nemotron-3-super typically responds in 2-5s
 5. **Model returns single console per enumerate call** — call multiple times or accept partial results
 6. **Temperature: 0** — deterministic output for structured data
@@ -193,7 +193,7 @@ except (requests.RequestException, json.JSONDecodeError, KeyError) as exc:
     log.exception("NLU failed")
     return MediaIntent(
         media_type="auto",
-        title=original_text,
+        title=raw_text,
         consoles=["all"],
         regions=["all"],
         format="auto",

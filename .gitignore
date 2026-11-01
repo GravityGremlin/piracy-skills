@@ -1,2 +1,4 @@
 .agent/
 piracy-skills/
+__pycache__/
+*.pyc

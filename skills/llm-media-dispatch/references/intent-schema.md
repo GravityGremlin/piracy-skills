@@ -7,7 +7,8 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 MediaType = Literal["game", "music", "movie", "tv", "book", "auto"]
-Format = Literal["No-Intro", "Redump", "TOSEC", "auto"]
+Format = Literal["No-Intro", "Redump", "TOSEC", "MAME", "FBNeo",
+                 "FLAC", "MP3", "Remux", "1080p", "720p", "EPUB", "PDF", "auto"]
 Priority = Literal["fast", "best", "complete"]
 
 @dataclass
@@ -138,7 +139,7 @@ The LLM must output ONLY this JSON structure. No extra fields, no markdown, no c
   "title": "string",
   "consoles": ["string"],
   "regions": ["string"],
-  "format": "No-Intro|Redump|TOSEC|auto",
+  "format": "No-Intro|Redump|TOSEC|MAME|FBNeo|FLAC|MP3|Remux|1080p|720p|EPUB|PDF|auto",
   "priority": "fast|best|complete",
   "original_text": "string"
 }

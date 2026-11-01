@@ -25,11 +25,11 @@ import time
 import urllib.parse
 import urllib.request
 
-AGGREGATOR = 'http://IPVPLACEHOLDER:19297'
-RYGRAB = 'scripts/rygrab.py' 
-RYGRAB_PY = '<path/to/rygrab.py>'
-BEETS_DB = '/your-stacks-path/beets/config/library.db'
-OUT = '<output/shortlist/dir>'
+AGGREGATOR = os.environ.get('FLEET_AGGREGATOR_URL', 'http://<aggregator-host>:19297')
+RYGRAB = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rygrab.py') 
+RYGRAB_PY = sys.executable
+BEETS_DB = os.environ.get('BEETS_DB', os.path.expanduser('~/beets/library.db'))
+OUT = os.environ.get('RYGRAB_OUT', 'shortlist-run.json')
 THROTTLE_S = 5.0
 EDITION_RX = re.compile(r'\b(deluxe|legacy|anniversary|remaster|remastered|expanded|'
                         r'super|special|bonus|collector|edition|reissue|mono|stereo)\b',

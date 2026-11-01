@@ -132,6 +132,10 @@ python3 btlist.py minerva-ps2.torrent --indexed > manifest.json
 # Or use aria2c with --select-file= and --bt-prioritize-piece=
 ```
 
+Engine choice is yours: aria2c is the canonical CLI here, and the same five
+torrent operations are documented for a qBittorrent/Transmission engine in
+`self-hosted-debrid/references/torrent-clients.md` (env-var contract included).
+
 ## Verification checklist
 
 - [ ] Every local game has ≥1 dat match (TOSEC/NO-INTRO/Redump)

@@ -13,11 +13,11 @@ metadata:
 
 # Media Library Operations
 
-Canonical library: `/path/to/library` (the directory your import pipeline imports
+Canonical library: `/your-media-path/library` (the directory your import pipeline imports
 into and your media server serves from).
 
 **Core principle: every removal is a MOVE to quarantine, never a delete.**
-Quarantine root: `/path/to/quarantine/<topic>-<date>/`.
+Quarantine root: `/your-media-path/quarantine/<topic>-<date>/`.
 Verify file counts after every pass (moved + kept must equal before-count).
 
 ---
@@ -266,20 +266,21 @@ if __name__ == '__main__':
 
 After any library mutation, media server indexes are stale until rebuilt:
 
-- **Media Server** — auto-imports within ~90s, or trigger via admin UI
-- **Media Server** — run "Scan Library" or wait for scheduled scan
-- **Media Server** — run "Scan Library Files" or "Refresh All Metadata"
-- **Media Server** — run `manage.py import_files` or wait for watcher
+- **Watch-folder server** — auto-imports within ~90s, or trigger via admin UI
+- **Folder-scan server** — run "Scan Library" or wait for the scheduled scan
+- **Metadata-driven server** — run "Scan Library Files" or "Refresh All Metadata"
+- **CLI-importer server** — run `manage.py import_files` or wait for the watcher
 
-Verify with read-only queries:
+Set `MEDIA_API_KEY` to your media server's API key (admin UI → Settings → API Keys),
+then verify with read-only queries:
 
 ```bash
-# Media Server: check song count
-sqlite3 /path/to/media server/media server.db "SELECT COUNT(*) FROM song;"
+# Media server: check song count
+sqlite3 "/path/to/media-server.db" "SELECT COUNT(*) FROM song;"  # your media server db file
 
-# Media Server: check item count via API
-curl -s "http://media server-host:8096/Items?Recursive=true&IncludeItemTypes=Audio" \
-  -H "X-Emby-Token: $MEDIA_CREDENTIAL" | python3 -c "import json,sys; print(json.load(sys.stdin)['TotalRecordCount'])"
+# Media server: check item count via API
+curl -s "http://media-server-host:8096/Items?Recursive=true&IncludeItemTypes=Audio" \
+  -H "X-Emby-Token: $MEDIA_API_KEY" | python3 -c "import json,sys; print(json.load(sys.stdin)['TotalRecordCount'])"
 ```
 
 ## Playlist Maintenance

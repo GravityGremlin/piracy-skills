@@ -23,10 +23,10 @@ import sys
 import time
 import urllib.request
 
-ENV = "path-to-credentials"
+ENV = os.environ.get("FLEET_ENV", "path-to-credentials")
 LANE = "http://IPVPLACEHOLDER:19493"
-EXPORT_SCRIPT = "path-to-credentials"
-LOG = "path-to-credentials"
+EXPORT_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "export-artists.py")
+LOG = os.environ.get("RYGRAB_LOG", "wait-and-export.log")
 
 # group_id -> artist label, filled in per dispatch.
 GROUPS: dict[str, str] = {}

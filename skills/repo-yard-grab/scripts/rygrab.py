@@ -27,15 +27,23 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-REPO = os.path.expanduser("~/your-project-path")
+REPO = os.environ.get("FLEET_REPO", "")
+
+def _url(env_name: str, default_port):
+    """Lane/aggregator/organizer base URL: env override, else <host>:<port>
+    placeholder the reader must point at their own fleet."""
+    u = os.environ.get(env_name, "").strip()
+    if u:
+        return u.rstrip("/")
+    return "http://<lane-host>:%s" % default_port
 
 TOOLS = {
-    "qobuz": "http://IPVPLACEHOLDER:19492",  # Qobuz
-    "tidal": "http://IPVPLACEHOLDER:19493",  # Tidal
-    "deezer": "http://IPVPLACEHOLDER:19494",  # Deezer
+    "qobuz": _url("FLEET_QOBUZ_URL", 19492),   # Qobuz
+    "tidal": _url("FLEET_TIDAL_URL", 19493),   # Tidal
+    "deezer": _url("FLEET_DEEZER_URL", 19494),  # Deezer
 }
-AGGREGATOR = "http://IPVPLACEHOLDER:19297"
-ORGANIZER = "http://IPVPLACEHOLDER:19298"
+AGGREGATOR = _url("FLEET_AGGREGATOR_URL", 19297)
+ORGANIZER = _url("FLEET_ORGANIZER_URL", 19298)
 
 # User-set lane priority (2026-09-06): all lanes are lossless so quality is
 # roughly interchangeable — prefer Qobuz, then Tidal, Deezer last.
@@ -58,16 +66,31 @@ def _env_value(path, key):
     return ""
 
 
-def lane_token():
-    return os.environ.get("HEADLESS_TOKEN", "").strip() or _env_value(
-        os.path.join(REPO, "tools", "qobuz", ".env"), "HEADLESS_TOKEN"
-    )
+def lane_token(lane: str = "tidal"):
+    """The lane bearer is the per-service TOOL_HEADLESS_TOKENS entry from the
+    fleet .env (a JSON map of lane -> bearer), NOT a plain HEADLESS_TOKEN;
+    a plain HEADLESS_TOKEN gets 401 from the lane. Env overrides win."""
+    tok = os.environ.get("HEADLESS_TOKEN", "").strip()
+    if tok:
+        return tok
+    raw = _env_value(os.path.join(REPO, ".env"), "TOOL_HEADLESS_TOKENS")
+    if raw:
+        try:
+            tokens = json.loads(raw)
+        except ValueError:
+            return ""
+        if isinstance(tokens, dict):
+            return tokens.get(lane, "")
+    return ""
 
 
 def organizer_token():
-    return os.environ.get("FLEET_ORGANIZER_TOKEN", "").strip() or _env_value(
-        os.path.join(REPO, ".env"), "FLEET_ORGANIZER_TOKEN"
-    )
+    tok = os.environ.get("FLEET_ORGANIZER_TOKEN", "").strip()
+    if tok:
+        return tok
+    if not REPO:
+        raise SystemExit("Set FLEET_TOKEN (lane bearer) / FLEET_ORGANIZER_TOKEN or FLEET_REPO (fleet checkout) first")
+    return _env_value(os.path.join(REPO, ".env"), "FLEET_ORGANIZER_TOKEN")
 
 
 def _request(url, token, payload=None, timeout=120):
@@ -115,7 +138,7 @@ def aggregator_auth():
 
 
 def lane_summary(lane):
-    return _retry(_request, f"{TOOLS[lane]}/download/jobs/summary", lane_token())
+    return _retry(_request, f"{TOOLS[lane]}/download/jobs/summary", lane_token(lane))
 
 
 def lane_depth(lane):
@@ -137,7 +160,7 @@ def resolve_artist(lane, artist):
     url = f"{TOOLS[lane]}/search/json?" + urllib.parse.urlencode(
         {"q": artist, "type": "artist"}
     )
-    results = _retry(_request, url, lane_token(), timeout=30).get("results", [])
+    results = _retry(_request, url, lane_token(lane), timeout=30).get("results", [])
     target = norm(artist)
     for r in results:
         if norm(r.get("title") or "") == target:
@@ -159,12 +182,12 @@ def dispatch_discography(lane, artist_id, artist_name):
     url = f"{TOOLS[lane]}/download/discography"
 
     def _post():
-        return _request(url, lane_token(), payload=payload)
+        return _request(url, lane_token(lane), payload=payload)
 
     def _recent_group_exists():
         try:
             summ = _request(f"{TOOLS[lane]}/download/jobs/summary",
-                             lane_token(), timeout=30)
+                             lane_token(lane), timeout=30)
         except Exception:
             return False
         groups = summ if isinstance(summ, list) else summ.get("groups", [])
@@ -198,7 +221,7 @@ def dispatch_discography(lane, artist_id, artist_name):
 
 def dispatch_url(lane, url):
     kind = "playlist" if "playlist" in url else ("album" if "album" in url else "track")
-    return _retry(_request, f"{TOOLS[lane]}/download/enqueue", lane_token(),
+    return _retry(_request, f"{TOOLS[lane]}/download/enqueue", lane_token(lane),
                   payload={"url": url, "kind": kind})
 
 
@@ -206,7 +229,7 @@ def search_albums(lane, artist):
     url = f"{TOOLS[lane]}/search/json?" + urllib.parse.urlencode(
         {"q": artist, "type": "album"}
     )
-    return _retry(_request, url, lane_token(), timeout=30).get("results", [])
+    return _retry(_request, url, lane_token(lane), timeout=30).get("results", [])
 
 
 def spread_albums(usable, platforms, artist):
@@ -254,7 +277,7 @@ def retry_group_errored(group_id):
     """POST /retry for every errored job in a dispatch group (any lane)."""
     for lane in TOOLS:
         try:
-            jobs = _retry(_request, f"{TOOLS[lane]}/download/jobs/data", lane_token(),
+            jobs = _retry(_request, f"{TOOLS[lane]}/download/jobs/data", lane_token(lane),
                           timeout=30)
         except Exception as exc:
             print(f"  {lane:12} unreachable: {exc}")
@@ -264,7 +287,7 @@ def retry_group_errored(group_id):
                 try:
                     resp = _retry(_request,
                                   f"{TOOLS[lane]}/download/jobs/{j['id']}/retry",
-                                  lane_token(), payload={}, timeout=30)
+                                  lane_token(lane), payload={}, timeout=30)
                     print(f"  {lane:12} retry {j['id']} ({str(j.get('title'))[:40]}): "
                           f"{json.dumps(resp)}")
                 except Exception as exc:
@@ -275,7 +298,7 @@ def print_group(group_id):
     found = False
     for lane in TOOLS:
         try:
-            jobs = _retry(_request, f"{TOOLS[lane]}/download/jobs/data", lane_token(),
+            jobs = _retry(_request, f"{TOOLS[lane]}/download/jobs/data", lane_token(lane),
                           timeout=30)
         except Exception as exc:
             print(f"  {lane:12} unreachable: {exc}")

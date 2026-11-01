@@ -34,6 +34,10 @@ that instance; this skill is the transferable engineering.
 
 ## Engine quirks (qBittorrent 5.x — all live-probed)
 
+The engine slot is swap-safe: `references/torrent-clients.md` documents the
+same five operations against aria2 (CLI + JSON-RPC) and Transmission (RPC
+handshake), plus the env-var contract every engine variant expects.
+
 - **5.2 renamed pause/resume**: `/api/v2/torrents/resume` and `/pause`
   return 404 "Endpoint does not exist" — the working names are
   `/api/v2/torrents/start` and `/stop`. Wrap as try-new, fall back on 404

@@ -1,6 +1,6 @@
 ---
 name: media-downloader-fleet
-description: "Audit/harden Flask+beets+opus media downloader fleets: API + filtering."
+description: "Audit and harden Flask + beets + opus media downloader fleets: API contracts, search filtering, worker pool patterns, deploy topology."
 version: 1.0.0
 author: Gravis Wellz
 license: MIT
@@ -17,11 +17,11 @@ Audit and harden Flask + beets + opus media downloader fleets. Covers API
 contracts, search filtering, worker pool patterns, deploy topology, and
 operational procedures for self-hosted media acquisition infrastructure.
 
-> **Deploy from the PROD checkout.** Containers typically mount the stacks
-> directory, but the deploy engine's pull/parity gates may run in a dev
-> checkout: a deploy run from the dev tree can recreate containers against
-> stale code and still report OK. Pull the stacks checkout, deploy from there,
-> then verify the SERVED page.
+> **Deploy from the checkout that owns the stack.** Containers typically mount a
+> stacks directory, while the deploy engine's pull/parity gates may run in a
+> developer checkout: a deploy run from the wrong tree can recreate containers
+> against stale code and still report OK. Pull the same checkout that owns the
+> stack, deploy from there, then verify the SERVED page.
 
 ## Core Architecture
 
@@ -32,21 +32,21 @@ A media downloader fleet typically consists of:
   files for import
 - **Aggregator** — a central Flask app that routes search queries to multiple
   lanes and merges results
-- **Import Pipeline** — a beets-based import pipeline that processes staged files,
+- **Beets import pipeline** — the staged-import stage that processes staged files,
   fetches metadata, and adds them to the library
 - **Library** — the final media collection served by a media server
 
 ### Typical Directory Layout
 
 ```
-/path/to/stacks/           # Docker Compose stacks
+/your-stacks-path/          # Docker Compose stacks
   lane-a/                  # One downloader per source
   lane-b/
   aggregator/              # Search aggregation + job dispatch
-  import pipeline/               # Beets import pipeline
+  beets-import/               # the beets import pipeline
   traefik/                 # Reverse proxy config
-/path/to/downloads/         # Staging area for incoming files
-/path/to/library/           # Final organized library
+/your-stacks-path/downloads/  # Staging area for incoming files
+/your-media-path/library/    # Final organized library
 ```
 
 ## API Contract
@@ -136,7 +136,7 @@ All lanes must return a normalized result schema:
 
 ### Container Layout
 
-Each lane runs as a separate container. The aggregator and import pipeline are
+Each lane runs as a separate container. The aggregator and the beets import pipeline are
 also separate containers. All share a common network for inter-service
 communication.
 
@@ -144,7 +144,7 @@ communication.
 
 - Each lane exposes `/health` returning 200 when ready
 - The aggregator waits for all lanes before marking itself healthy
-- The import pipeline watches the staging directory for new files
+- The beets import pipeline watches the staging directory for new files
 
 ### Verification After Deploy
 
@@ -191,7 +191,7 @@ After the code is green and the lane is deployed, verify on prod:
 - **Verify the lane appears in the aggregator's source list**
 - **Verify the lane's health endpoint responds**
 - **Verify a test download completes end-to-end**
-- **Verify the import pipeline picks up the staged file**
+- **Verify the beets import pipeline picks up the staged file**
 
 ## Operational Procedures
 
@@ -230,7 +230,7 @@ When fixing many test failures across tools, use batch delegation:
 
 ## Security Considerations
 
-- **Path safety** — import pipeline import must enforce resolve()+parents containment
+- **Path safety** — the beets import pipeline must enforce resolve()+parents containment
   (traversal attempts rejected)
 - **Token scrub** — never log or display API tokens
 - **CSRF protection** — all state-changing endpoints need origin validation

@@ -21,7 +21,7 @@ import re
 import sys
 
 LIB = "/storage/library/music-library"
-EXPORTS = "/your-media-path/exports"  # == /storage/exports (same btrfs, dev 60)
+EXPORTS = os.environ.get("RYGRAB_EXPORT_DIR", os.path.expanduser("~/exports"))  # == /storage/exports (same btrfs, dev 60)
 AUDIO = (".opus", ".mp3", ".flac", ".m4a", ".ogg", ".wav")
 ART = ("cover.jpg", "cover.png", "folder.jpg", "front.jpg")
 

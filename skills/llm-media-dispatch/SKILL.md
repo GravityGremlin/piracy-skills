@@ -23,15 +23,15 @@ Build a natural-language media acquisition layer: parse user requests with an LL
 - Evaluating LLM models for JSON-structured output reliability
 - Designing lane registry + execution engine for multi-media-type acquisition
 
-## 0. Rule: drive the lane that exists, never rebuild it (user rule, 2026-10-14)
+## 0. Rule: drive the lane that exists, never rebuild it
 
 This skill describes the *design* of an NLU acquisition layer. The layer is
-already built and live: YARR on your arr stack host (`https://yarr.your-domain.example`, lanes games /
-soulseek / web / seerr / library / releases / music-downloader / roms / edge) plus
-the downloader fleet for music. For an actual request ("download TimeSplitters for PS2",
-"grab artist X's discography") the work is `POST /api/find` → pick →
-`POST /api/grab` against YARR, or the lane's own tool for music — see the
-`yarr-ops` and `music-grab` skills.
+already built and live on the sample deployment: an NLU dispatcher holding a lane
+registry (games / soulseek / web / seerr / library / releases / music-downloader /
+roms / edge) plus the downloader fleet for music. For an actual request ("download
+TimeSplitters for PS2", "grab artist X's discography") the work is
+`POST /api/find` → pick → `POST /api/grab` against the dispatcher, or the lane's
+own tool for music — see the published `media-acquisition` and `media-grabber` skills.
 
 Never hand-roll a downloader, scraper, or per-item enqueue loop to satisfy one
 request, and never treat a lane's bug as license to replace the lane: apply the
@@ -40,18 +40,18 @@ exists is the failure mode this rule exists to stop.
 
 ## 1. NLU Model Selection — critical gate
 
-Only `pool/nemotron-3-super` reliably returns clean JSON in `response_format: {type: json_object}` mode.
+Only `nemotron-3-super` reliably returns clean JSON in `response_format: {type: json_object}` mode.
 
 | Model | JSON Output | Completeness | Verdict |
 |-------|-------------|--------------|---------|
-| `pool/nemotron-3-super` | ✅ Clean | ✅ All consoles/regions | **Production** |
+| `nemotron-3-super` | ✅ Clean | ✅ All consoles/regions | **Production** |
 | `openrouter/nemotron-3-ultra-550b-a55b:free` | ✅ Clean | ❌ Only PlayStation | Unusable |
 | `openrouter/nemotron-3.5-lightning:free` | ❌ Thinking dump | ❌ Incomplete | Unusable |
 | `openrouter/nemotron-3-super-120b-a12b:free` | ❌ None (404) | — | Unavailable |
 | `openrouter/glm-5.2:free` | ❌ 404 | — | Unavailable |
 | `oc/nemotron-*` | ❌ OpenCode-only | — | Unusable |
 
-**Rule:** Use `pool/nemotron-3-super` via OmniRoute (`http://IPVPLACEHOLDER:20128/v1`). Always set `response_format: {"type": "json_object"}` and a system prompt that forbids commentary. Lightning/Ultra models dump raw thinking even in JSON mode — they are not reliable for structured output.
+**Rule:** Use `nemotron-3-super` via your OpenAI-compatible NLU gateway (`$NLU_BASE_URL`). Always set `response_format: {"type": "json_object"}` and a system prompt that forbids commentary. Lightning/Ultra models dump raw thinking even in JSON mode — they are not reliable for structured output.
 
 ## 2. Intent Schema
 
@@ -99,6 +99,8 @@ MEDIA_TYPE_LANES = {
     "music": ["music-downloader", "slskd"],
     "game": [],   # populate when game lanes exist
     "movie": [],
+    "tv": [],
+    "book": [],   # populate when lanes exist
 }
 ```
 
@@ -199,8 +201,8 @@ def execute_intent(intent: MediaIntent, dry_run: bool = False):
     for lane in lanes:
         result = dispatch_to_lane(lane, intent)
         results.append({"lane": lane, "result": result})
-        if result.get("job_id"):
-            break  # success
+        if intent.priority == "fast" and result.get("job_id"):
+            break  # fast: first real dispatch wins; best/complete keep going
     return {"intent": intent, "results": results}
 ```
 
@@ -222,7 +224,7 @@ def execute_intent(intent: MediaIntent, dry_run: bool = False):
 - **JSON mode requires system prompt**: Must explicitly forbid commentary/thinking in system prompt.
 - **Model returns single console per call**: `/ai/enumerate` returns one console per invocation; call multiple times or extend prompt.
 - **No game lanes yet**: `/ai/execute` correctly returns "no healthy lanes for media_type: game" — implement game lanes before game acquisition works.
-- **OmniRoute auth**: Use `HERMES_CUSTOM_IPVPLACEHOLDER_CREDENTIAL` env var for OmniRoute calls.
+- **Gateway auth**: export `NLU_API_KEY` and send it in the `Authorization` header of every NLU call.
 - **NLU timeout**: Set 30s timeout; nemotron-3-super typically responds in 2-5s.
 
 ## 9. References

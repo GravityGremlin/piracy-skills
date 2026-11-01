@@ -7,14 +7,16 @@ upgrade path replaces.
 ## 0. Find the host that owns the series
 
 ```bash
-for H in IPVPLACEHOLDER IPVPLACEHOLDER; do
+for H in $SONARR_HOSTS; do   # e.g. SONARR_HOSTS="sonarr-1 sonarr-2"
   echo "== $H"
   curl -s -m 10 -H "X-Api-Key: $KEY" "http://$H:8989/api/v3/series" \
     | python3 -c "import sys,json;[print(s['id'],s['title']) for s in json.load(sys.stdin) if 'TITLE' in s['title'].lower()]"
 done
 ```
 
-Both hosts read the key from `/your-app-data-path/arrs/sonarr/config.xml`. Ground truth
+Both hosts read the key from `/your-app-data-path/arrs/sonarr/config.xml`
+(`RK=$(grep -oP '(?<=<ApiKey>)[^<]+' /your-app-data-path/arrs/sonarr/config.xml)`, fetched on
+the Sonarr host itself — over SSH if config.xml lives off-box). Ground truth
 is the host whose `/api/v3/series/{id}` returns the record; searches fired
 anywhere else are wasted.
 

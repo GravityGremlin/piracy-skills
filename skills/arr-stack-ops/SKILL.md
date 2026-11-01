@@ -39,18 +39,18 @@ them stop searching, grabbing, or importing.
 
 ## App config dirs are `/your-app-data-path/arrs/<app>/` — NOT the stack dir — and each app's
 credential is the `<ApiKey>` element of that dir's `config.xml`:
-`grep -o '<ApiKey>[^<]*' /your-app-data-path/arrs/sonarr/config.xml`.
+`RK=$(grep -oP '(?<=<ApiKey>)[^<]+' /your-app-data-path/arrs/sonarr/config.xml)`.
 Keys are per-install, not per app: another host's Prowlarr has its own key, so a
 401 from `HOST:9696/api/v1` means this host's key was reused — grep THAT host's
 config.xml over SSH instead of concluding the service or key is broken.
 Every app mounts `/your-media-path → /storage`, so a container path `/storage/x/y` is
 `/your-media-path/x/y` on the host and the library root `/storage/library/shows` is
 `/your-media-path/library/shows`. Calls look like
-`curl -s -H "X-Api-Key: $KEY" http://IPVPLACEHOLDER:8989/api/v3/<route>` (Prowlarr is `/api/v1`).
+`curl -s -H "X-Api-Key: $RK" "http://<arr-host>:8989/api/v3/<route>"` (Prowlarr is `/api/v1`).
 
 ## The arrs are not single-host-only
 
-Your arr stack host's stack is the one documented below, but a second arr stack host (IPVPLACEHOLDER) runs
+Your arr stack host's stack is the one documented below, but a second arr stack host runs
 its own Sonarr on :8989 with the same layout — config in
 `/your-app-data-path/arrs/sonarr/config.xml`, library root `/storage/library/series`, an
 NFS client of your arr stack host's `/your-media-path`, and the same credential. A title missing from
@@ -139,8 +139,8 @@ Chrome's `session not created ... unable to connect to renderer`.
 Fix: headless Chrome needs room. In `/your-stacks-path/arrs/compose.yaml` give
 flaresolverr `shm_size: 1gb` and memory ≥2G / cpus ≥1 (512M plus the default 64M
 `/dev/shm` cannot start the renderer). Recreate the container, then verify with a
-real solve: `curl -s -X POST http://IPVPLACEHOLDER:8191/v1 -H 'Content-Type: application/json' -d '{"cmd":"request.get","url":"https://<indexer>/","maxTimeout":60000}'`
-→ `status: ok` in ~10-20s. `POST /api/v1/indexerproxy/testall` returning valid
+real solve: `curl -s -X POST http://<flaresolverr-host>:8191/v1 -H 'Content-Type: application/json' -d '{"cmd":"request.get","url":"https://<indexer>/","maxTimeout":60000}'`
+→ `status: ok` in ~10-20s. `POST /api/v1/indexerproxy/testall` returning valid JSON
  does NOT clear the health warning immediately — proxy health rechecks on its own
 schedule.
 
@@ -163,8 +163,8 @@ stay missing and get re-searched, which is normally the point.
 ## Root folder points at a retired tree (the music canon switch)
 
 Symptom: a whole app is stuck on `Missing root folder: /storage/library/music/`
-and every completed download fails to import. That path died in the 2026-09-09
-canon switch to `/storage/library/music-library`; sonic-adjacent apps (Lidarr,
+and every completed download fails to import. That path was retired when the music
+library moved to `/your-media-path/library/music-library`; the music-app fleet apps (Lidarr,
 Navidrome, beets tooling) were not all repointed.
 
 Diagnose three layers, in this order — fixing only the first unblocks nothing:
@@ -196,18 +196,19 @@ dedupe pass just cleaned. Correct shape on your arr stack host:
 - SABnzbd `music` category -> `/storage/downloader-fleet/sabnzbd-import`, the beets import pipeline's
   allowlisted `/import/sabnzbd` staging root. Set it through SAB's own API so you
   never touch its ini as your user:
-  `curl "http://IPVPLACEHOLDER:8088/api?mode=set_config&apikey=<key>&section=categories&keyword=music&name=music&dir=/storage/downloader-fleet/sabnzbd-import&pp=&script=&priority=0&newzbin=&order=2"`
+  `curl "http://<sabnzbd-host>:8088/api?mode=set_config&apikey=<key>&section=categories&keyword=music&name=music&dir=/storage/downloader-fleet/sabnzbd-import&pp=&script=&priority=0&newzbin=&order=2"`
   (Lidarr already sends `musicCategory=music`; no client change needed.)
-- Nothing enqueues an arr's completed grab, so `scripts/media/sab_ingest_watcher.py`
-  (cron `*/15`) tags-scans the staging root, skips what beets owns, and POSTs
-  `/enqueue`. Without that glue the grabs land in staging and rot — the same bug
-  wearing a different hat.
+- Nothing enqueues an arr's completed grab into the beets import pipeline on its
+  own: a small cron watcher (`*/15`) must tag-scan the staging root, skip what
+  beets already owns, and POST `/enqueue` into the import pipeline. Without that
+  glue the grabs land in staging and rot — the same bug wearing a different hat.
 
 ### Pitfalls that cost time here
 
-- **Ownership across the staging boundary.** SAB keeps completed dirs at
-  911/`users`, the beets import pipeline runs as 1000. Moving them with SAB's container (the
-  only non-root way) preserves 911, so the beets import pipeline's run dies with
+- **Ownership across the staging boundary.** SAB keeps completed dirs under its
+  own uid (`users/` guest account, 911); the beets import pipeline runs as uid 1000.
+  Moving files with SAB's container user (the only non-root way) preserves 911, so
+  the beets import's run dies with
   `Permission denied while moving ... to /music/...` and the album row lands with
   every item still pointing at staging. `docker exec sabnzbd chown -R 1000:1000
   /storage/downloader-fleet/sabnzbd-import` is the fix; then remove the debris rows

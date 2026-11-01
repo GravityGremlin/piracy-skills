@@ -1,6 +1,6 @@
 ---
 name: repo-yard-grab
-description: "Use when grabbing music (albums, discographies, tracks, playlists) via the downloader fleet on your host — resolve, dispatch, and watch downloads through the beets organizer into the Navidrome library, and hardlink them to /your-media-path/exports. Also covers fleet queue status, stuck-job cleanup, playlist import workflow, Tidal entitlement/quality, and hunting fresh scene releases."
+description: "Use when grabbing music (albums, discographies, tracks, playlists) via the downloader fleet on your host — resolve, dispatch, and watch downloads through the beets organizer into the Navidrome library, and hardlink them to the exports directory. Also covers fleet queue status, stuck-job cleanup, playlist import workflow, Tidal entitlement/quality, and hunting fresh scene releases."
 version: 1.4.0
 author: Gravis Wellz
 license: MIT

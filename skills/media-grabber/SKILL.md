@@ -1,6 +1,6 @@
 ---
 name: media-grabber
-description: "Use when grabbing media (albums, discographies, tracks, playlists) via a downloader fleet — resolve, dispatch, and watch downloads through the import pipeline into the media library. Also covers fleet queue status, stuck-job cleanup, and hunting fresh releases."
+description: "Use when grabbing media (albums, discographies, tracks, playlists) via a downloader fleet — resolve, dispatch, and watch downloads through the beets import pipeline into the media library. Also covers fleet queue status, stuck-job cleanup, and hunting fresh releases."
 version: 1.0.0
 author: Gravis Wellz
 license: MIT
@@ -14,8 +14,20 @@ metadata:
 # Media Grabber
 
 Grab albums/discographies/tracks through your downloader fleet's headless
-lanes. Downloads auto-stage into the import pipeline's beets import and land in
+lanes. Downloads auto-stage into the beets import pipeline and land in
 the media library — no manual beets, ever.
+
+> **Prerequisites.** Execute each example against your own fleet by setting:
+>
+> ```bash
+> export FLEET_URL="http://<aggregator-host>:<port>"   # aggregator base URL
+> export LANE_URL="http://<lane-host>:<port>"          # one downloader lane's base URL
+> export FLEET_TOKEN="<aggregator bearer token>"
+> export LANE_TOKEN="<that lane's bearer token>"
+> ```
+>
+> `<aggregator-host>`, `<lane-host>` and the masked `Bearer ***` values in the
+> commands below mean these variables.
 
 > **This is the user-facing entry point** for grabbing media through the
 > fleet. For deep audit, hardening, deploy topology, and E2E test runs,
@@ -32,7 +44,7 @@ After any discography dispatch, verify per-album file counts against the
 lane job's `data.source_quality.lossless_tracks`.
 
 **Active lanes:** configure per your fleet. A peer's "FLAC" may be a lossy
-re-wrap — check its ancestry with a spectral cutoff script (same-run
+re-wrap — check its ancestry with a spectral cutoff comparison — see `repo-yard-grab/scripts/spectral_cutoff.py` in this repo (same-run
 128k/fake-chain calibration).
 
 ## Source Quality: Lossless First, Lossy as a Very Last Resort
@@ -125,7 +137,7 @@ curl -X POST http://<aggregator-host>/download/discography \
 
 ```bash
 # Search for a track
-curl -s "http://<aggregator-host>/search/json?q=artist+track+title&type=track" \
+curl -s "$FLEET_URL/search?q=artist+track+title&source=<lane>" \
   -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
 
 # Grab the first result

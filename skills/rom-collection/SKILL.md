@@ -8,7 +8,7 @@ platforms: [linux]
 metadata:
   hermes:
     tags: [rom, collection, minerva, tosec, nointro, good, igdb, dat]
-    related_skills: [console-homebrew-staging, ps2-homebrew]
+    related_skills: [console-homebrew-staging]
 
 ---
 

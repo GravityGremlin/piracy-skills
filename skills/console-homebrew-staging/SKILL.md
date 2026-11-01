@@ -18,7 +18,7 @@ installers, system tools) into a clean folder that mirrors the intended SD-card 
 PC-tools area for host-side utilities. Validated on a PS2 setup (OPL/PS2-Launcher/wOPL, 2026-08).
 
 ## Session notes
-- `references/ps2-staging-2026-08-21.md` — 2026-08-21 end-to-end staging: exFAT stick mount-flip (sdd→sde), GitHub 60/hr anon limit fix via a GitHub token from path-to-credentials, rolling vs pinned wOPL 1.1-351, OrbitOPL Toolbox 1.3.0 in tools/, israpps/ps2doom nightly vs legacy ps2doom/ps2oom, dirsors/ps2quake 1.09 MIPS build, Gageformer/Ember demo, Freedoom vs owned WAD separation (adds israpps/ps2doom+Ember to the known-builds list).
+- `references/ps2-homebrew.md` — PS2 deep reference: OPL/wOPL current state, exFAT vs APA, MX4SIO speeds, boot methods, emulator landscape, CHD→ISO→ZSO pipeline.
 
 ## Golden rule: verify against the LIVE project, not memory
 - Homebrew scenes move fast and repos **rename/move** (OPL: `ps2homebrew/OPL` → now `ps2homebrew/Open-PS2-Loader`). Always resolve the current repo by search, don't assume a name.

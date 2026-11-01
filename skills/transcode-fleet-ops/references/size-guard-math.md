@@ -63,7 +63,7 @@ The floor guard and the size gate must be tuned together:
 
 ## Diagnosing a veto loop
 
-1. Find the job reports for the stuck file (see report-parsing.md).
+1. Find the job reports for the stuck file (see job-report-analysis.md).
 2. Extract the veto numbers: `New file size X which Y% original file size: Z MB`.
 3. Check which tier the plugin selected and what its estimate was.
 4. Check the gate's `lowerBound` and `upperBound`.

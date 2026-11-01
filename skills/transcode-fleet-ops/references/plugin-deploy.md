@@ -48,7 +48,7 @@ step grew the file.
 Plugin/log text contains non-ASCII look-alikes inside words, breaking regexes.
 
 **Fix**: Anchor on ASCII substrings; extract numbers from raw bytes (see
-report-parsing.md).
+job-report-analysis.md).
 
 ### 4. Plugin not executing
 

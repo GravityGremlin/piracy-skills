@@ -3,6 +3,7 @@ name: anti-bot-scraping
 description: "Use when scraping bot-walled APIs: TLS fingerprint walls."
 version: 1.0.0
 license: MIT
+author: Gravis Wellz
 ---
 
 # Anti-Bot Scraping (authenticated session pools)

@@ -2,7 +2,7 @@
 name: peertube-ops
 description: "Use when debugging PeerTube imports, syncs, stuck videos."
 version: 1.0.0
-author: Hermes Agent
+author: Gravis Wellz
 license: MIT
 platforms: [linux]
 metadata:

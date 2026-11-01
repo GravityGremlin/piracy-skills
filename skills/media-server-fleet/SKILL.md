@@ -3,6 +3,7 @@ name: media-server-fleet
 description: "Use for any media server instance, standby, or routing."
 version: 1.0.0
 license: MIT
+author: Gravis Wellz
 ---
 
 # Media Server Fleet

@@ -2,7 +2,7 @@
 name: webamp-ops
 description: Deploy and operate a self-hosted Webamp instance (captbaritone/webamp fork) with custom library data, butterchurn visualizer, and media library window. Covers build pipeline, bundle handling, load-order requirements, CDP verification gates, and known production traps.
 version: 1.0.0
-author: Hermes Agent
+author: Gravis Wellz
 license: MIT
 platforms: [linux]
 metadata:

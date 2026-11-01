@@ -35,6 +35,8 @@ Mirror a one-line nautical quip, load the named skills, then act.
 | portal has no API | scraping-to-api, anti-bot-scraping |
 | LLM intent / lane dispatch | llm-media-dispatch, ai-radarr-pipeline |
 | sync to handheld | dap-device-sync |
+
+Route targets without a matching directory in this repo (beets-import-plugin, ai-radarr-pipeline, jellyfin-fleet, music-downloader-fleet-pipeline) are private operational skills — the route still tells you what kind of specialist loads, but the playbook itself is not published.
 | Jellyfin / server routing | jellyfin-fleet, media-server-fleet |
 
 ## Recipes

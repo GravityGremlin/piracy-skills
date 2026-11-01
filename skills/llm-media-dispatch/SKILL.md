@@ -117,7 +117,7 @@ MEDIA_TYPE_LANES = {
 6. Verify hash against DAT
 ```
 
-**Tools to leverage (headless):**
+**Tools to use (headless):**
 - `silverlays/NoIntro-Roms-Downloader` (PyQt6, can run headless)
 - `andrebrait/DATROMTool` (cross-platform DAT parser)
 - `andrebrait/1g1r-romset-generator` (1 Game 1 ROM filtering)

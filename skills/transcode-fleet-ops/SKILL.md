@@ -7,6 +7,8 @@ metadata:
   hermes:
     tags: [tdarr, transcode, fleet, av1]
     related_skills: [media-server-fleet]
+author: Gravis Wellz
+license: MIT
 ---
 
 # Transcode fleet ops
@@ -60,7 +62,7 @@ report to a central server, or by running independent stacks per host.
 
 ## Job report parsing
 
-See `references/report-parsing.md` for detailed recipes on:
+See `references/job-report-analysis.md` for detailed recipes on:
 - Scoping a time window of job reports
 - Classifying reports by tail markers (`[-success-]` / `[-error-]`)
 - Identifying source files from report content

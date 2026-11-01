@@ -3,6 +3,7 @@ name: scraping-to-api
 description: "Use when a service has no API: build one via UI automation."
 version: 1.0.0
 license: MIT
+author: Gravis Wellz
 ---
 
 # Scraping-to-API: build the API the vendor didn't ship

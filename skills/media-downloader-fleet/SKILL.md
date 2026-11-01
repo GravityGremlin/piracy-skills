@@ -2,7 +2,7 @@
 name: media-downloader-fleet
 description: "Audit/harden Flask+beets+opus media downloader fleets: API + filtering."
 version: 1.0.0
-author: Community
+author: Gravis Wellz
 license: MIT
 platforms: [linux, macos, windows]
 metadata:

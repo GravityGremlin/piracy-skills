@@ -23,8 +23,7 @@ A collection of generic, shareable skills for self-hosted media infrastructure. 
 | `peertube-ops` | PeerTube debugging: stuck imports, failed syncs, lost follows, yt-dlp issues, DB state transitions, log retention caveats |
 | `youtube-content` | YouTube transcripts → summaries, threads, blogs; auto-caption fetching, language fallback, output formats |
 | `youtube-channel-review` | Verdict workflow: Gen-AI slop / human+slop-packaging / human+plagiarism / human authentic; cadence analysis, transcript sampling, source tracing |
-| `console-homebrew-staging` | Research/download/verify/stage console homebrew (PS2 OPL, emulators, exploit installers) into clean SD-card layout + PC tools; GitHub release discovery, ELF verification |
-| `ps2-homebrew` | PS2 homebrew reference: OPL/wOPL current state, exFAT vs APA, MX4SIO speeds, boot methods, emulator landscape, CHD→ISO→ZSO pipeline, Minerva workflow |
+| `console-homebrew-staging` | Research/download/verify/stage console homebrew (PS2 OPL, emulators, exploit installers) into clean SD-card layout + PC tools; GitHub release discovery, ELF verification; PS2 deep reference in `references/ps2-homebrew.md` |
 | `rom-collection` | Completionist ROM system: Minerva torrents + TOSEC/NO-INTRO/Redump dats + IGDB enrichment; dat parsing, checksum matching, selective torrent download, library index schema |
 | `arr-stack-ops` | Sonarr/Radarr day-2 ops: re-grabbing episodes, release hunting, interactive import, queue cleanup, API verification |
 | `self-hosted-debrid` | Self-hosted debrid cache: torrent sourcing, SLSKD slskd source integration, IA redump sources |

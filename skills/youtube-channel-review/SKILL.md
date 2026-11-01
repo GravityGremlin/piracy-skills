@@ -2,7 +2,7 @@
 name: youtube-channel-review
 description: "Use when judging if YouTube content is slop or human-made."
 version: 1.0.0
-author: Hermes Agent
+author: Gravis Wellz
 license: MIT
 platforms: [linux]
 metadata:

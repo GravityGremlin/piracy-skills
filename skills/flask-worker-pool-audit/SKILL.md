@@ -2,7 +2,7 @@
 name: flask-worker-pool-audit
 description: "Audit Flask download-worker pools."
 version: 1.0.0
-author: Community
+author: Gravis Wellz
 license: MIT
 platforms: [linux, macos, windows]
 metadata:

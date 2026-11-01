@@ -59,3 +59,67 @@ pure-ASCII lines (emoji-bearing lines survive). Consequences + discipline:
 - Make operator-heavy edits by writing the file from python (execute_code
   bytes-exact with count asserts), then re-verify with `node --check` and a
   targeted base64 print of the changed region.
+
+## Parsing recipes
+
+# Transcode job-report parsing recipes
+
+Validated on Tdarr 2.86.01. Paths relative to
+`<data-dir>/server/Tdarr/DB2/JobReports/`.
+
+## Scope a window
+
+```bash
+find <data-dir>/server/Tdarr/DB2/JobReports -type f \
+  -newermt '2026-09-08' -printf '%T@\t%p\n' | sort -rn
+```
+
+- Snapshot this list ONCE into a variable/file. `find` re-runs shuffle order as
+  Tdarr appends to files; `rows[:2]` samples change identity between calls
+  otherwise.
+- Job dirs with report files on >=2 distinct days = repeat failures (queue
+  refails every scan until the class is fixed).
+- Day histogram: count files per mtime day — shows queue drain shape (e.g.
+  2348/1403/1076/442/322/209/0/0/0 then a new wave).
+
+## Classify a report (tail markers, not whole file)
+
+```python
+raw = open(p, "rb").read()
+tail = raw[-3000:]
+status = "ERROR" if b"[-error-]" in tail else ("success" if b"[-success-]" in tail else "running?")
+```
+
+- `[-success-]`/`[-error-]` are PER-STEP markers (`[Step W06] [C4] Worker [-success-]`).
+  A job can pass several steps and still end `transcodeError`.
+- Final verdict: last `updated server verdict: transcodeError|transcodeFinished|...`
+  line. These append MINUTES after job end — a live file can grep clean, then
+  contain the line. Re-check near the end of the review.
+
+## Identify the job's source file
+
+```python
+src = re.findall(rb'-i\s+"([^"]+)"', raw)   # first hit = job input
+```
+
+`Scanning new file: "..."` lines reference TdarrCacheFile intermediates and
+CANNOT identify the job (several per report, misleading names).
+
+## Extract veto numbers (size check)
+
+The veto text looks like: `New file size not within limits. New file
+size1481.591which 212% original file size:695.820MB. upperBound 110%` — but
+contains homoglyphs: non-ASCII lookalike chars inside the words/spacing.
+Consequences:
+
+- `r"which (\d+)%"` silently fails while the line prints fine.
+- Anchor on ASCII substrings that do appear literally: `not within limits`,
+  `is above floor`, `[-success-]`, `[-error-]`, `Pre-processing Tdarr_Plugin_`.
+- Extract numbers from RAW BYTES around the anchor:
+  ```python
+  i = raw.find(b"not within limits")
+  slice_ = raw[i:i+140]
+  re.findall(rb"(\d{2,4})\s?%", slice_)  # first pct = growth, 110% = upperBound
+  ```
+- Or clean once with `re.sub(r"[^\x00-\x7f]", " ", s)` — but beware fused words
+  after dropping NBSP-style chars; prefer byte-anchored slicing for numbers.

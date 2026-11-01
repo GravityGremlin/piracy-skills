@@ -351,9 +351,10 @@ normalised.** The library path is composed from the `albumartist` TAG
 (`paths.default: $albumartist/$album/...`), and the provider lane imports ASIS
 with no musicbrainz plugin — so merging dirs and rewriting tags fixes the
 library today, and the very next provider grab re-creates the second dir.
-After any merge, install the import-time normaliser: `the beets import pipeline` →
-`references/beets-import-plugin.md` (beets import stage; the obvious event
-hooks do not fire for ASIS imports). Two merge-script traps: write beets rows
+After any merge, install the import-time normaliser as a beets import-stage
+plugin; note that the obvious event hooks do not fire for ASIS imports, so
+enforce the normalisation in the import call itself, not in post-event hooks.
+Two merge-script traps: write beets rows
 with **library-relative** paths (absolute paths silently break every row you
 touch), and pick the canonical spelling per ARTIST, not per directory — the
 MB-matched and Tidal-matched albums of one artist can be split across both

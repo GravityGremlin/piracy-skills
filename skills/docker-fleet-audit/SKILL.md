@@ -3,6 +3,7 @@ name: docker-fleet-audit
 description: "Audit Docker hosts: fleet health, crash loops, timelines."
 version: 1.0.0
 license: MIT
+author: Gravis Wellz
 ---
 
 # Docker Fleet Audit

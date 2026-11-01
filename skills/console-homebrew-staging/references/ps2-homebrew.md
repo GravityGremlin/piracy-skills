@@ -1,16 +1,4 @@
----
-name: ps2-homebrew
-description: Setting up and maintaining a classic fat PS2 with Open PS2 Loader (OPL), SATA HDD adapter, MX4SIO SD adapter, FMCB/FunTuna boot, and emulators. Covers the verified-current state of OPL/wOPL, exFAT vs APA HDD formatting, MX4SIO speed realities, the SD card floor plan, emulator landscape, and conversion tooling.
-version: 1.0.0
-author: Hermes Agent
-license: MIT
-platforms: [linux]
-metadata:
-  hermes:
-    tags: [PS2, OPL, MX4SIO, FMCB, emulator, retro, homebrew, exFAT]
-    related_skills: [console-homebrew-staging]
-
----
+<!-- folded from the standalone ps2-homebrew skill -->
 
 # PS2 Homebrew (OPL / SATA HDD / MX4SIO / emulators)
 

@@ -46,4 +46,4 @@ Each skill is a self-contained `SKILL.md` file in its own directory under `skill
 
 ## Contributing
 
-These skills are maintained as a community resource. If you have improvements, bug fixes, or new skills, open a PR at `https://fj.gravitywell.xyz/gravitas/piracy-skills`.
+These skills are maintained as a community resource. Primary public surface and PR target: `https://github.com/GravityGremlin/piracy-skills`. The same tree also lives on the project's self-hosted Forgejo (`https://fj.gravitywell.xyz/gravitas/piracy-skills`), which is auth-gated and serves as the canonical copy.

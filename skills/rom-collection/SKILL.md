@@ -2,7 +2,7 @@
 name: rom-collection
 description: Build a complete ROM collection system using Minerva torrents, classic databases (TOSEC, NOINTRO, GOOD), and IGDB linking. No web UI — CLI/API driven. Covers torrent metadata, dat validation, dat-to-rom matching, and IGDB enrichment.
 version: 1.0.0
-author: Hermes Agent
+author: Gravis Wellz
 license: MIT
 platforms: [linux]
 metadata:

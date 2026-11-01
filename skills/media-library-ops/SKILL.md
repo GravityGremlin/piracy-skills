@@ -2,7 +2,7 @@
 name: media-library-ops
 description: "Use when deduping or maintaining a media library."
 version: 1.0.0
-author: Community
+author: Gravis Wellz
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
@@ -34,6 +34,11 @@ User-standard rules — apply every pass:
   elsewhere: a staging/quarantine FLAC whose album already has a lossy library
   counterpart is the only lossless master of that recording, so it is
   keep-or-decide-explicitly, never a duplicate to sweep.
+- A truncated or damaged library copy is worse than a lossy one: if the library
+  recording's duration is far short of the quarantine source, the quarantine
+  FLAC is the only correct master — transcode to the library codec, replace the
+  bad file, and update Beets length. Never sweep the source to "fix" a bad
+  library copy.
 - Before calling anything a duplicate, confirm it at CONTENT level — a matching
   artist/album dir, or even a matching title, is not the same recording. Compare
   duration (±2s) and codec/bitrate, and when both sides are real, keep the
@@ -46,6 +51,16 @@ User-standard rules — apply every pass:
 - Classical music: multi-disc sets with work/movement numbering need special
   handling — the "one copy per album" rule applies to the work, not the
   recording. Keep the best recording of each work.
+
+### Temp / orphan sweep
+
+Conversion temps (`tmp*` written beside a destination before an atomic rename) are left
+behind when a transcode run is interrupted. They accumulate silently (hundreds of files,
+gigabytes) and read like real files to a casual sweep. Sweep `tmp*` under the library root
+as part of the maintenance pass, not ad hoc. Before deleting, confirm redundancy: a
+matching final file present (same size/tags/duration), or the temp dates from a known
+interrupted run while today's temporaries rename correctly. Verify the moved+kept count
+equals before-count like any other pass.
 
 ---
 
@@ -264,7 +279,7 @@ sqlite3 /path/to/media server/media server.db "SELECT COUNT(*) FROM song;"
 
 # Media Server: check item count via API
 curl -s "http://media server-host:8096/Items?Recursive=true&IncludeItemTypes=Audio" \
-  -H "X-Emby-Token: $API_KEY" | python3 -c "import json,sys; print(json.load(sys.stdin)['TotalRecordCount'])"
+  -H "X-Emby-Token: $MEDIA_CREDENTIAL" | python3 -c "import json,sys; print(json.load(sys.stdin)['TotalRecordCount'])"
 ```
 
 ## Playlist Maintenance

@@ -8,7 +8,7 @@ platforms: [linux]
 metadata:
   hermes:
     tags: [webamp, captbaritone, music, visualizer, butterchurn, deploy]
-    related_skills: [cdp-web-verification]
+    related_skills: []
 
 ---
 

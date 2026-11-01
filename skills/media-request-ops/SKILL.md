@@ -2,6 +2,7 @@
 name: media-request-ops
 description: "Use when a media request manager breaks, loops, or needs upgrading."
 version: 1.0.0
+author: Gravis Wellz
 license: MIT
 ---
 
@@ -55,7 +56,7 @@ settings). Restart after any config change.
 
 - The request manager must target the **primary** media server, not a standby.
 - Verify the media server's `Id` matches what the request manager expects.
-- The request manager's API key must have admin privileges on the media
+- The request manager's credential must have admin privileges on the media
   server.
 
 ## Related skills

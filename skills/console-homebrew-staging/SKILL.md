@@ -2,13 +2,13 @@
 name: console-homebrew-staging
 description: "Research, download, verify, and stage console homebrew/emulator/loader files into a clean SD-card layout (and PC-side tools). Use when a user wants to set up a modded retro console (PS2, etc.) — OPL-class loaders, emulators, FTB/exploit installers — and wants the newest builds copied into a staging folder. Covers GitHub-release asset discovery with rolling vs pinned versions, ELF verification, and archive extraction."
 version: 1.0.0
-author: Hermes Agent
+author: Gravis Wellz
 license: MIT
 platforms: [linux]
 metadata:
   hermes:
     tags: [retro, emulation, homebrew, ps2, opl, sd-card, github-releases]
-    related_skills: [selfhosted-web-serving]
+    related_skills: []
 ---
 
 # Console homebrew staging
@@ -18,7 +18,7 @@ installers, system tools) into a clean folder that mirrors the intended SD-card 
 PC-tools area for host-side utilities. Validated on a PS2 setup (OPL/PS2-Launcher/wOPL, 2026-08).
 
 ## Session notes
-- `references/ps2-staging-2026-08-21.md` — 2026-08-21 end-to-end staging: exFAT stick mount-flip (sdd→sde), GitHub 60/hr anon limit fix via GHTOK from ~/Documents/AGENT_EEEnote.txt, rolling vs pinned wOPL 1.1-351, OrbitOPL Toolbox 1.3.0 in tools/, israpps/ps2doom nightly vs legacy ps2doom/ps2oom, dirsors/ps2quake 1.09 MIPS build, Gageformer/Ember demo, Freedoom vs owned WAD separation (adds israpps/ps2doom+Ember to the known-builds list).
+- `references/ps2-staging-2026-08-21.md` — 2026-08-21 end-to-end staging: exFAT stick mount-flip (sdd→sde), GitHub 60/hr anon limit fix via a GitHub token from path-to-credentials, rolling vs pinned wOPL 1.1-351, OrbitOPL Toolbox 1.3.0 in tools/, israpps/ps2doom nightly vs legacy ps2doom/ps2oom, dirsors/ps2quake 1.09 MIPS build, Gageformer/Ember demo, Freedoom vs owned WAD separation (adds israpps/ps2doom+Ember to the known-builds list).
 
 ## Golden rule: verify against the LIVE project, not memory
 - Homebrew scenes move fast and repos **rename/move** (OPL: `ps2homebrew/OPL` → now `ps2homebrew/Open-PS2-Loader`). Always resolve the current repo by search, don't assume a name.
@@ -47,7 +47,7 @@ gh release list -R ps2homebrew/Open-PS2-Loader --limit 5 --json tagName,isLatest
 gh release view -R orbitopl/OrbitOPL-Toolbox --json tagName,assets
 
 # Authenticated (bypass 60/hr anon limit)
-eval "$(age -d -i ~/.config/age/key.txt ~/.secrets.age)"  # loads GITHUB_TOKEN
+eval "$(age -d -i path-to-credentials your-credential-store)"  # loads GITHUB_TOKEN
 gh api repos/ps2homebrew/Open-PS2-Loader/releases/latest --jq '.assets[].browser_download_url'
 ```
 

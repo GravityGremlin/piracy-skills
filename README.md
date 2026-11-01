@@ -1,11 +1,12 @@
 # Piracy Skills
 
-A collection of generic, shareable skills for self-hosted media infrastructure. These skills cover the full lifecycle of a media downloader fleet: downloading, transcoding, library maintenance, and operational procedures — plus adjacent tooling for scraping, retro gaming, and content analysis.
+A collection of generic, shareable skills for self-hosted media infrastructure. These skills cover the full lifecycle of a media downloader fleet — downloading, transcoding, library maintenance, and operational procedures — plus adjacent tooling for scraping, retro gaming, and content analysis. `piracy-ops` is the routing hub: a plain-language ask ("grab the new Gojira album", "yarr, a show") is classified once and dispatched to lane-fleet skills, arr-stack skills, LLM NLU decoding, debrid sourcing, or ROM retrieval.
 
 ## Skills
 
 | Skill | Description |
 |---|---|
+| `piracy-ops` | Meta-router for the whole acquisition pipeline: one entry point that routes an ask (music, video, ROMs, debrid, scraping, LLM dispatch, handheld sync) to the right specialist skills |
 | `media-downloader-fleet` | Audit and harden Flask + beets + opus media downloader fleets: API contracts, search filtering, worker pool patterns, deploy topology |
 | `audio-transcode-pipeline` | Correctness rules for audio transcoding pipelines: ffmpeg metadata handling, opus encoding, album art, batch processing |
 | `flask-worker-pool-audit` | Six recurring defects in Flask + threading.Event worker pools: race conditions, priority inversion, stuck jobs, state transitions |
@@ -25,6 +26,12 @@ A collection of generic, shareable skills for self-hosted media infrastructure. 
 | `console-homebrew-staging` | Research/download/verify/stage console homebrew (PS2 OPL, emulators, exploit installers) into clean SD-card layout + PC tools; GitHub release discovery, ELF verification |
 | `ps2-homebrew` | PS2 homebrew reference: OPL/wOPL current state, exFAT vs APA, MX4SIO speeds, boot methods, emulator landscape, CHD→ISO→ZSO pipeline, Minerva workflow |
 | `rom-collection` | Completionist ROM system: Minerva torrents + TOSEC/NO-INTRO/Redump dats + IGDB enrichment; dat parsing, checksum matching, selective torrent download, library index schema |
+| `arr-stack-ops` | Sonarr/Radarr day-2 ops: re-grabbing episodes, release hunting, interactive import, queue cleanup, API verification |
+| `self-hosted-debrid` | Self-hosted debrid cache: torrent sourcing, SLSKD slskd source integration, IA redump sources |
+| `repo-yard-grab` | Headless download lanes for music: resolve, dispatch, watch the beets import into the library; queue status, stuck-job cleanup, playlist import, Tidal quality entitlements, fresh-release hunting |
+| `media-acquisition` | Acquiring media from YouTube into the library: yt-dlp pipelines, progress reporting, post-processing |
+| `llm-media-dispatch` | LLM-driven acquisition: natural-language ask to parsed intent JSON to lane dispatch into the fleet |
+| `dap-device-sync` | Sync music and playlists to a Rockbox DAP: playlist semantics, folder structure, device quirks |
 
 ## Usage
 
@@ -39,4 +46,4 @@ Each skill is a self-contained `SKILL.md` file in its own directory under `skill
 
 ## Contributing
 
-These skills are maintained as a community resource. If you have improvements, bug fixes, or new skills, open a PR on `gravitas/piracy-skills` at `https://fj.n0g.xyz/gravitas/piracy-skills`.
+These skills are maintained as a community resource. If you have improvements, bug fixes, or new skills, open a PR at `https://fj.gravitywell.xyz/gravitas/piracy-skills`.

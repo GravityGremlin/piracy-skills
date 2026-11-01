@@ -2,7 +2,7 @@
 name: media-grabber
 description: "Use when grabbing media (albums, discographies, tracks, playlists) via a downloader fleet — resolve, dispatch, and watch downloads through the import pipeline into the media library. Also covers fleet queue status, stuck-job cleanup, and hunting fresh releases."
 version: 1.0.0
-author: Community
+author: Gravis Wellz
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
@@ -20,6 +20,12 @@ the media library — no manual beets, ever.
 > **This is the user-facing entry point** for grabbing media through the
 > fleet. For deep audit, hardening, deploy topology, and E2E test runs,
 > see the `media-downloader-fleet` skill.
+
+Check the release DATE before hunting a "missing" release: lanes only carry
+released material, so a future-dated album resolves to the artist's back
+catalogue and looks exactly like a broken search. "Not out until <date>; only
+the lead single exists" is a correct answer — say it and offer the single
+instead of dispatching the album title.
 
 Discographies can arrive SHORT (source throttling silently drops tracks).
 After any discography dispatch, verify per-album file counts against the
@@ -177,6 +183,12 @@ find /path/to/library/<artist> -name "*.opus" | wc -l
   sanitisation (`:`→`_`), and a trailing year qualifier are the same album.
   An unfolded comparison invents "not imported" and turns a safe prune
   into data loss.
+- **Tidal `abuse_detected: User account is suspended due to abuse` self-lifts**
+  in roughly 8 h with no code, credential or config change. Do not retire the
+  lane or re-auth on the first burst: compare the LAST `abuse_detected`
+  timestamp in `docker logs <tidal>` against the FIRST successful download
+  after it. If a download succeeded later, the lane recovered on its own and
+  the suspension was time-based.
 
 ## Progress Protocol
 

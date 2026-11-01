@@ -107,7 +107,7 @@ docker logs organizer --since 30m 2>&1 | grep '<job_id>'
 ```
 
 Tokens: `FLEET_ORGANIZER_TOKEN` and `HEADLESS_TOKEN` (Tidal) from
-`path-to-credentials`.
+the fleet's `.env`.
 
 ## 5. ntfy alert channels
 

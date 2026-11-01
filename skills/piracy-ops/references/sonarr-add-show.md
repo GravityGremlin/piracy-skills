@@ -3,7 +3,7 @@
 Working procedure for adding a TV show to the library on your arr stack host (no ssh needed
 on your arr stack host; from another host, ssh your-user@your arr stack host first).
 
-1. Key: `grep -o '<ApiKey>[^<]*' path-to-credentials` (local files,
+1. Key: `grep -o '<ApiKey>[^<]*' /your-app-data-path/arrs/sonarr/config.xml` (local files,
    no sudo needed).
 2. Check not already added: GET /api/v3/series and filter by title.
 3. Lookup: GET /api/v3/series/lookup?term= and pick the right tvdbId.

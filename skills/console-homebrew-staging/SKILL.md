@@ -47,7 +47,7 @@ gh release list -R ps2homebrew/Open-PS2-Loader --limit 5 --json tagName,isLatest
 gh release view -R orbitopl/OrbitOPL-Toolbox --json tagName,assets
 
 # Authenticated (bypass 60/hr anon limit)
-eval "$(age -d -i path-to-credentials your-credential-store)"  # loads GITHUB_TOKEN
+source /path/to/your/secrets-file   # exports GITHUB_TOKEN (from your secrets store)
 gh api repos/ps2homebrew/Open-PS2-Loader/releases/latest --jq '.assets[].browser_download_url'
 ```
 

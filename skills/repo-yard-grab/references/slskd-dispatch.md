@@ -161,7 +161,7 @@ the knowledge repo repo, and it must stay secret-free (cluster rule). Fetch at u
 - SLSKD lane token: the slskd-headless container env on your host
   (`docker inspect slskd-headless` / its compose env).
 - Aggregator/Organizer token: the fleet's `.env` on your host
-  (`docker exec organizer printenv`, or `path-to-credentials`).
+  (`docker exec organizer printenv`, or the fleet's `.env`).
 
 ## rygrab.py limitation
 Current rygrab.py only accepts `--platform {qobuz,tidal,deezer}`. For slskd, dispatch via aggregator API directly as shown above, then monitor via lane API.

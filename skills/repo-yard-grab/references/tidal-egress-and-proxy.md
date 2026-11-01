@@ -42,7 +42,7 @@ Squid HTTP proxies on your proxy host, public host `your-domain.example`:
 | 5 | 16685 | 16695 |
 
 They rotate upstream exits twice daily (00:00 / 12:00). Basic auth is required
-— user in your proxy config, password in `path-to-credentials` on
+— user in your proxy config, password in the proxy's own credentials file on
 your proxy host. Squid on 16680 is the shared-direct one; the 5 above are distinct
 Mullvad cities.
 

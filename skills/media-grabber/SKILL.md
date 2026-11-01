@@ -26,7 +26,7 @@ the media library — no manual beets, ever.
 > export LANE_TOKEN="<that lane's bearer token>"
 > ```
 >
-> `<aggregator-host>`, `<lane-host>` and the masked `Bearer ***` values in the
+> `<aggregator-host>`, `<lane-host>` and the masked bearer headers in the
 > commands below mean these variables.
 
 > **This is the user-facing entry point** for grabbing media through the

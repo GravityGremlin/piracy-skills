@@ -266,7 +266,7 @@ held. Two distinct defects in `tools/tidal/app/download/routes.py`:
 worked: read the queued jobs' `group_id`, list their titles, and compare
 against `os.scandir(library/<artist>)` with a year/edition-stripping
 normalizer. Cancel the excess via `POST /download/jobs/<id>/cancel` (needs the
-per-service bearer from `path-to-credentials` key `TOOL_HEADLESS_TOKENS`,
+per-service bearer from the fleet's gitignored `.env` key `TOOL_HEADLESS_TOKENS`,
 JSON — the plain `HEADLESS_TOKEN` in your credential store is NOT the lane token).
 Also drop non-studio items by title regex (live, remix, b-sides, compilation,
 original score, full concert) — Tidal's album feed includes them.
@@ -431,7 +431,7 @@ that will silently omit deep-queue jobs (this produced a false "queue
 drained" report). For per-job detail beyond 500 rows, read `jobs.db`
 directly or use `?limit=N` (which caps at 500 on the default endpoint).
 
-**The lane bearer is `path-to-credentials` key `TOOL_HEADLESS_TOKENS`**
+**The lane bearer is `TOOL_HEADLESS_TOKENS` from the fleet's gitignored `.env`**
 (a JSON object, per-service). The plain `HEADLESS_TOKEN` in your credential store
 returns `{"error":"Unauthorized"}` against the lane.
 

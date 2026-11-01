@@ -12,8 +12,8 @@ into the Navidrome library. Stdlib only.
   rygrab.py --group <group_id> [--retry]                  # watch / requeue errored jobs
   rygrab.py --poll
 
-Auth: HEADLESS_TOKEN (env or path-to-credentials) for
-lanes; FLEET_ORGANIZER_TOKEN (path-to-credentials) for the organizer.
+Auth: HEADLESS_TOKEN (env or the fleet's gitignored .env) for
+lanes; FLEET_ORGANIZER_TOKEN (the fleet .env) for the organizer.
 """
 
 import argparse

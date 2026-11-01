@@ -40,7 +40,7 @@ before auditing the acquisition skills — the audit protocol lives there too.
 - Destination for short films: `/your-media-path/library/short-films` (Jellyfin sees it as `/media/short-films`).
 - Long imports (hours, many playlists) report progress on low-priority ntfy: see `references/ytdlp-progress-ntfy.md`.
 - YouTube blocks unauthenticated requests. Use `--cookies <file>` with a Netscape cookies.txt that includes `.youtube.com` domains (`VISITOR_INFO1_LIVE`, `YSC`, `LOGIN_INFO`, `__Secure-3PSID`). Google-only cookies are insufficient.
-- Cookie sources on your host: `path-to-credentials` (a Netscape cookies.txt; may be stale — refresh by exporting from a browser). Backup copy: `path-to-credentials`.
+- Cookie sources on your host: `/path/to/cookies.txt` (Netscape cookies.txt; may be stale — refresh by exporting from a browser). Backup copy: `/path/to/cookies.backup.txt`.
 - Remove the cookies file from the destination directory after download (security). Keep a stable reference copy elsewhere if needed.
 
 ## Bulk playlist imports

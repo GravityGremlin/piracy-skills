@@ -17,7 +17,7 @@ both artist AND track name, as separate globs.
 ### 2. Lane queues (still in flight)
 
 ```bash
-TOKEN=$(grep '^HEADLESS_TOKEN=' path-to-credentials | cut -d= -f2)
+TOKEN=$(grep '^HEADLESS_TOKEN=' /path/to/the/fleet/.env | cut -d= -f2)
 for port in 19492 19493 19494 19496; do
   curl -s -m 5 -H "Authorization: Bearer $TOKEN" \
     "http://IPVPLACEHOLDER:$port/download/jobs/summary" | python3 -c "..."
@@ -30,7 +30,7 @@ matching the artist or track.
 ### 3. Organizer queue (staging/beets processing)
 
 ```bash
-TOKEN=$(grep '^FLEET_ORGANIZER_TOKEN=' path-to-credentials | cut -d= -f2)
+TOKEN=$(grep '^FLEET_ORGANIZER_TOKEN=' /path/to/the/fleet/.env | cut -d= -f2)
 curl -s -m 5 -H "Authorization: Bearer $TOKEN" \
   'http://IPVPLACEHOLDER:19298/queue/status'
 curl -s -m 5 -H "Authorization: Bearer $TOKEN" \

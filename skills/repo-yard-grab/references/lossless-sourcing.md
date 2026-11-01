@@ -109,7 +109,7 @@ before assuming a gate is active in prod.
 
 - Credentials live in THREE places and the TOKEN FILE wins over env:
   prod `.env` (`/your-stacks-path/fleet/tools/qobuz/.env`), dev `.env`, and
-  `path-to-credentials` (container
+  the credential store for the container's config
   `/app/.config/qobuz`). Update all three, then RECREATE the container
   (`docker compose up -d qobuz-headless` from `/your-stacks-path/fleet`) —
   a plain `docker restart` keeps the old env baked at creation.

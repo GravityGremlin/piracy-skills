@@ -15,7 +15,7 @@ pointing there are stale registry, not a queue).
   (per-group counters). Bearer auth.
 - slskd ground truth: the daemon itself —
   `curl -H "X-API-Key: <key>" http://IPVPLACEHOLDER:5030/api/v0/transfers/downloads`
-  (key in `path-to-credentials`, `api_keys.my_api_key`). A lane job
+  (key in your slskd config, `api_keys.my_api_key`). A lane job
   with no matching transfer here is lane-side fiction.
 
 ## Token discipline

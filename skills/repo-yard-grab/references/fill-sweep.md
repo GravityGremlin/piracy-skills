@@ -85,7 +85,7 @@ search all four provider lanes first; only when the title is absent
 everywhere, fall to slskd.
 
 - slskd API: `X-API-Key` header (key lives in
-  `path-to-credentials` under `web.api_keys`), base
+  your slskd config file, under `web.api_keys`), base
   `http://IPVPLACEHOLDER:5030`. Flow: `POST /api/v0/searches
   {"searchText": "...", "fileLimit": 50}` -> poll `GET /api/v0/searches/
   <id>` until Completed -> `GET /api/v0/searches/<id>/responses`

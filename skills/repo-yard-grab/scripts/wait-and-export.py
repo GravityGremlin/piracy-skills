@@ -23,7 +23,7 @@ import sys
 import time
 import urllib.request
 
-ENV = os.environ.get("FLEET_ENV", "path-to-credentials")
+ENV = os.environ.get("FLEET_ENV", "/your-stacks-path/.env")
 LANE = "http://IPVPLACEHOLDER:19493"
 EXPORT_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "export-artists.py")
 LOG = os.environ.get("RYGRAB_LOG", "wait-and-export.log")

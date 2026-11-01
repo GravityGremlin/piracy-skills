@@ -153,3 +153,39 @@ misses; the resolver surfaces editions search doesn't list). After dispatching:
 Report: dispatched set (title / year / type), what the lane's resolver added
 beyond search, singles left out (with an offer), and finish only after the
 landing check — never end the task at "jobs queued".
+
+
+## Historical note: queue caps count jobs, not tracks
+
+The Spotify lane (decommissioned 2026-09-21) enforced
+`MAX_DISCOGRAPHY_TRACKS = 100` on `/download/discography`
+(configurable via `downloads.max_discography_tracks` or the
+`MAX_DISCOGRAPHY_TRACKS` env var). Before enqueueing any artist, it resolves
+each album's track count; if the total >= cap, it refuses with HTTP 422.
+
+This prevents a repeat of the 2026-09-07 Martin Stadtfeld flood, where a
+single 10.9k-track album job (one T1 envelope) bypassed the 500-job queue
+cap and spawned 65k downstream jobs via `fetch_album_tracks` fan-out. The
+queue cap counts jobs, not tracks — the flood was one job.
+
+That flood path died with the Spotify lane; the underlying lesson
+(queue caps count jobs, not tracks) applies to any future fan-out.
+
+
+
+## Historical note: queue caps count jobs, not tracks
+
+The Spotify lane (decommissioned 2026-09-21) enforced
+`MAX_DISCOGRAPHY_TRACKS = 100` on `/download/discography`
+(configurable via `downloads.max_discography_tracks` or the
+`MAX_DISCOGRAPHY_TRACKS` env var). Before enqueueing any artist, it resolves
+each album's track count; if the total >= cap, it refuses with HTTP 422.
+
+This prevents a repeat of the 2026-09-07 Martin Stadtfeld flood, where a
+single 10.9k-track album job (one T1 envelope) bypassed the 500-job queue
+cap and spawned 65k downstream jobs via `fetch_album_tracks` fan-out. The
+queue cap counts jobs, not tracks — the flood was one job.
+
+That flood path died with the Spotify lane; the underlying lesson
+(queue caps count jobs, not tracks) applies to any future fan-out.
+
